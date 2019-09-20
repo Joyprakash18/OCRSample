@@ -8,10 +8,13 @@ import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.gms.vision.CameraSource;
@@ -22,12 +25,15 @@ import com.google.android.gms.vision.text.TextRecognizer;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
     private TextView detectedTextView;
     private SurfaceView cameraView;
     private int RequestCameraPermissionID = 10;
     private static final int MY_PERMISSIONS_REQUESTS = 0;
+    private TextToSpeech textToSpeech;
+    private Button mSpeechButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +41,30 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         detectedTextView = (TextView) findViewById(R.id.detected_text);
         cameraView = (SurfaceView) findViewById(R.id.surfaceView);
+        mSpeechButton = findViewById(R.id.speechBtn);
+        intializerTextToSpeech();
         requestPermissions();
+        setOnClickListener();
+    }
+
+    private void setOnClickListener() {
+        mSpeechButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                textToSpeech.speak(detectedTextView.getText().toString(), TextToSpeech.QUEUE_FLUSH, null);
+            }
+        });
+    }
+
+    private void intializerTextToSpeech() {
+        textToSpeech=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if(status != TextToSpeech.ERROR) {
+                    textToSpeech.setLanguage(Locale.UK);
+                }
+            }
+        });
     }
 
     private void requestPermissions()
@@ -143,5 +172,13 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    public void onPause(){
+        if(textToSpeech !=null){
+            textToSpeech.stop();
+            textToSpeech.shutdown();
+        }
+        super.onPause();
     }
 }

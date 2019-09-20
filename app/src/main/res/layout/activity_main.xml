@@ -20,8 +20,20 @@
         android:layout_height="match_parent"
         android:id="@+id/detected_text"
         android:layout_below="@id/surfaceView"
+        android:layout_above="@id/speechBtn"
         android:layout_margin="25dp"
+        android:padding="16dp"
         android:layout_centerHorizontal="true"
         android:background="#EEEEEE"
-        android:scrollbars="vertical" />
+        android:scrollbars="vertical"
+        />
+
+    <Button
+        android:id="@+id/speechBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Speech"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        />
 </RelativeLayout>
